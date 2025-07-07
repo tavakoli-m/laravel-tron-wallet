@@ -11,6 +11,7 @@ Route::post('/verify',VerifyController::class);
 
 Route::middleware('auth:sanctum')->prefix('wallet')->controller(WalletController::class)->group(function(){
     Route::get('/','index');
+    Route::post('/create','store');
     Route::get('/refresh','refresh');
     Route::get('/{wallet}','show');
 });

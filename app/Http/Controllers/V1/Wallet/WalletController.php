@@ -10,6 +10,7 @@ use App\Services\TronService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class WalletController extends Controller
 {
@@ -39,10 +40,22 @@ class WalletController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request,TronService $tronService)
     {
-        //
+        $wallet = $tronService->createWallet();
+
+        $walletInstance = Wallet::create([
+            'user_id' => Auth::id(),
+            'address' => $wallet['public_address'],
+            'key' => Crypt::encryptString($wallet['private_key']),
+            'balance' => 0.0,
+        ]);
+
+        return ApiResponse::withData([
+            'wallet' => new WalletListApiResource($walletInstance)
+        ])->send();
     }
+
 
     /**
      * Display the specified resource.
