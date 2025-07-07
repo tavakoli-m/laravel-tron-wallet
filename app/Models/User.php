@@ -16,4 +16,9 @@ class User extends Authenticatable
     protected $fillable = [
         'email'
     ];
+
+    public function otp()
+    {
+        return $this->hasMany(Otp::class);
+    }
 }

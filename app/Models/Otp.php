@@ -12,4 +12,9 @@ class Otp extends Model
         'expire_at',
         'user_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
