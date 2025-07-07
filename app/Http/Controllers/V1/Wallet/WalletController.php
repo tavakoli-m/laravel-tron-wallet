@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\Wallet\WalletListApiResource;
 use App\Models\Wallet;
 use App\Services\TronService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,7 +28,7 @@ class WalletController extends Controller
     public function refresh(TronService $tronService)
     {
         $wallets = Wallet::whereUserId(Auth::id())->get();
-        foreach($wallets as $wallet) {
+        foreach ($wallets as $wallet) {
             $wallet->balance = $tronService->getTrxBalance($wallet->address);
             $wallet->save();
         }
@@ -46,8 +47,14 @@ class WalletController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Wallet $wallet)
     {
-        //
+        if ($wallet->user_id !== Auth::id()) {
+            throw new AuthorizationException();
+        }
+
+        return  ApiResponse::withData([
+            'wallet' => new WalletListApiResource($wallet)
+        ])->send();
     }
 }
