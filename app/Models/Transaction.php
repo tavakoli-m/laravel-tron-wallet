@@ -16,4 +16,9 @@ class Transaction extends Model
         'tx_id',
         'type'
     ];
+
+    public function wallet()
+    {
+        return $this->belongsTo(Wallet::class);
+    }
 }
