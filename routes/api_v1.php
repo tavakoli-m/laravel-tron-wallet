@@ -14,4 +14,5 @@ Route::middleware('auth:sanctum')->prefix('wallet')->controller(WalletController
     Route::post('/create','store');
     Route::get('/refresh','refresh');
     Route::get('/{wallet}','show');
+    Route::post('/{wallet}/withdrawal','withdrawal');
 });
