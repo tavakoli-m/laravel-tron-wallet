@@ -91,11 +91,6 @@ class WalletController extends Controller
         try {
             DB::beginTransaction();
 
-            $transaction = new Transaction;
-
-            $transaction->amount = $request->amount;
-            $transaction->wallet_id = $wallet->id;
-            $transaction->type = 'withdrawal';
 
             $blockChainTransaction = $tronService->sendTrx(
                 Crypt::decryptString($wallet->key),
@@ -103,9 +98,7 @@ class WalletController extends Controller
                 $request->amount,
                 $wallet->address
             );
-            $transaction->tx_id = $blockChainTransaction['txID'];
 
-            $transaction->save();
 
             $wallet->balance = $tronService->getTrxBalance($wallet->address);
             $wallet->save();
